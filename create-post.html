@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-200">
+
+    <header class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold">Create New Post</h1>
+            <a href="dashboard.html" class="text-white">Back to Dashboard</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-8">
+        <form id="createPostForm" class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="mb-4">
+                <label for="title" class="block text-gray-700 font-medium">Post Title</label>
+                <input type="text" id="title" class="w-full border-gray-300 rounded-lg shadow-sm mt-2 p-2" required>
+            </div>
+            <div class="mb-4">
+                <label for="content" class="block text-gray-700 font-medium">Post Content</label>
+                <textarea id="content" rows="6" class="w-full border-gray-300 rounded-lg shadow-sm mt-2 p-2" required></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="image" class="block text-gray-700 font-medium">Upload Image</label>
+                <input type="file" id="image" class="w-full border-gray-300 rounded-lg shadow-sm mt-2 p-2" accept="image/*" required>
+            </div>
+            <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg">Publish</button>
+        </form>
+    </main>
+
+    <footer class="bg-blue-600 text-white p-4 text-center">
+        <p>&copy; 2024 My Blog. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const form = document.getElementById('createPostForm');
+        const posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const imageInput = document.getElementById('image');
+            const imageFile = imageInput.files[0];
+
+            if (!imageFile) {
+                alert("Please upload an image.");
+                return;
+            }
+
+            // Read the image file as a Base64 string
+            const reader = new FileReader();
+            reader.onload = function () {
+                const imageData = reader.result;
+
+                // Create the new post object
+                const newPost = {
+                    id: Date.now(),
+                    title,
+                    content,
+                    image: imageData, // Store the image as Base64
+                };
+
+                posts.push(newPost);
+                localStorage.setItem('posts', JSON.stringify(posts));
+                alert("Post created successfully!");
+                window.location.href = 'dashboard.html';
+            };
+
+            reader.readAsDataURL(imageFile); // Convert the image file to Base64
+        });
+    </script>
+
+</body>
+</html>
